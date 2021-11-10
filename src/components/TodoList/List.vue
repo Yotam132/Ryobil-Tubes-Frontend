@@ -78,13 +78,13 @@
         <v-dialog v-model="editDialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Form Todo</span>
+                    <span class="headline">Form Edit</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
-                        <v-text-field v-model="formTodo.task" label="Task" required></v-text-field>
-                        <v-select v-model="formTodo.priority" :items="['Penting', 'Biasa', 'Tidak Penting']" label="Priority" required></v-select>
-                        <v-textarea v-model="formTodo.note" label="Note" required></v-textarea>
+                        <v-text-field v-model="formEdit.task" label="Task" required></v-text-field>
+                        <v-select v-model="formEdit.priority" :items="['Penting', 'Biasa', 'Tidak Penting']" label="Priority" required></v-select>
+                        <v-textarea v-model="formEdit.note" label="Note" required></v-textarea>
                     </v-container>
                 </v-card-text>
 
@@ -142,7 +142,7 @@ export default{
                     value: "task",
                 },
                 {text: "Check Priority", value: "priority" },
-                {text: "Note", value: "note" },
+                // {text: "Note", value: "note" },
                 {text: "Actions", value: "actions" },
             ],
 
@@ -165,6 +165,7 @@ export default{
             ],
 
             formTodo: {task: null, priority: null, note: null},
+            formEdit: {task: null, priority: null, note: null},
         };
     },
     methods: {
@@ -194,24 +195,24 @@ export default{
         },
         editItem(item){
             this.editDialog = true;
-            this.formTodo = item;
-            this.tempEditItem = item;
+            this.index = this.todos.indexOf(item);
+            this.formEdit = Object.assign({}, this.todos[this.index]);
+            this.tempEditItem = Object.assign({}, this.todos[this.index]);
         },
         cancelEdit(){
-            this.editDialog = false;
             this.tempEditItem = null;
             this.index = null;
-            this.resetForm();
+            this.formEdit = {task: null, priority: null, note: null};
+            this.editDialog = false;
         },
         editData(){
-            this.index = this.todos.indexOf(this.tempEditItem);
             if(this.index >= 0)
             {
-                Object.assign(this.todos[this.index], this.formTodo);
+                Object.assign(this.todos[this.index], this.formEdit);
             }
             else
             {
-                this.todos.push(this.formTodo);
+                this.todos.push(this.formEdit);
             }
 
             this.cancelEdit();
